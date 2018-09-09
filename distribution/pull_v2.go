@@ -107,6 +107,12 @@ func (p *v2Puller) pullV2Repository(ctx context.Context, ref reference.Named, pl
 		// error later on.
 		p.confirmedV2 = true
 
+		logrus.Debugf("Found tags, %v ", tags)
+		if os.Getenv("NOOP_PULL_ONLY_LIST_TAGS") == "true" {
+			progress.Message(p.config.ProgressOutput, "", fmt.Sprintf("Found tags, %v", tags))
+			return nil
+		}
+
 		for _, tag := range tags {
 			tagRef, err := reference.WithTag(ref, tag)
 			if err != nil {

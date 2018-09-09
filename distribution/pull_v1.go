@@ -107,6 +107,12 @@ func (p *v1Puller) pullRepository(ctx context.Context, ref auth.Scope) error {
 		return err
 	}
 
+	logrus.Debugf("Found tags, %v ", tagsList)
+	if os.Getenv("NOOP_PULL_ONLY_LIST_TAGS") == "true" {
+		progress.Message(p.config.ProgressOutput, "", fmt.Sprintf("Found tags, %v", tagsList))
+		return nil
+	}
+
 	for tag, id := range tagsList {
 		repoData.ImgList[id] = &registry.ImgData{
 			ID:       id,
